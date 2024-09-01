@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Player</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://dl.dropboxusercontent.com/s/ai2ny5smsk07k7m/lunaradio.min.js?dl=0"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+        }
+        #lunaradio-container {
+            width: 100%;
+            height: 100vh;
+            background-image: url("https://www.cutralcoalinstante.com/wp-content/uploads/2020/05/operador-de-radio.jpeg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        #lunaradio {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #dropdown-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            transition: background 0.3s, transform 0.3s;
+        }
+        #dropdown-button:hover {
+            background: rgba(0, 0, 0, 1);
+            transform: scale(1.05);
+        }
+        #radio-list {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 10px;
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto; /* Scrollable */
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s, transform 0.3s;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        #radio-list.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #search-bar {
+            width: calc(100% - 20px);
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.9);
+            color: white; /* Text color */
+            z-index: 1001;
+            position: sticky;
+            top: 0;
+        }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .radio-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .radio-thumbnail {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        .radio-title {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="lunaradio-container">
+        <button id="dropdown-button">☰ Radio List</button>
+        <div id="radio-list">
+            <input type="text" id="search-bar" placeholder="Search radios...">
+            <!-- Radio items from 1 to 20 -->
+            <div class="radio-item" data-stream-url="http://162.244.80.52:8732/;stream.mp3?DIST=TuneIn&TGT=TuneIn&maxServers=2&gdpr=0&us_privacy=1YNY&partnertok=eyJhbGciOiJIUzI1NiIsImtpZCI6InR1bmVpbiIsInR5cCI6IkpXVCJ9.eyJ0cnVzdGVkX3BhcnRuZXIiOnRydWUsImlhdCI6MTYzNTg5MzYzMywiaXNzIjoidGlzcnYifQ.MOdxNOF638bWA3-fPsih2J02gJGmOAADKr7Sax_mRt0" data-radio-name="Akaboozi FM" data-thumbnail="https://i.postimg.cc/5tZZRzXy/unnamed.png">
+                <img src="https://i.postimg.cc/5tZZRzXy/unnamed.png" alt="Akaboozi FM" class="radio-thumbnail">
+                <div class="radio-title">Akaboozi FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://s5.voscast.com:9909/EYOBUJJAJJA" data-radio-name="Cbs Radio" data-thumbnail="https://i.postimg.cc/kg536qrJ/dbkgn4qhz7-1.png">
+                <img src="https://i.postimg.cc/kg536qrJ/dbkgn4qhz7-1.png" alt="Cbs Radio" class="radio-thumbnail">
+                <div class="radio-title">Cbs Radio</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://www.radiosimba.ug:8000/stream" data-radio-name="Simba FM" data-thumbnail="https://i.postimg.cc/qMwHvg5D/52qba9zer0-1.png">
+                <img src="https://i.postimg.cc/qMwHvg5D/52qba9zer0-1.png" alt="Simba FM" class="radio-thumbnail">
+                <div class="radio-title">Simba FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://edge.mixlr.com/channel/xbxnh" data-radio-name="Bukedde FM" data-thumbnail="https://cdn-radiotime-logos.tunein.com/s230438g.png">
+                <img src="https://cdn-radiotime-logos.tunein.com/s230438g.png" alt="Bukedde FM" class="radio-thumbnail">
+                <div class="radio-title">Bukedde FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://streamingv2.shoutcast.com/galaxy-fm-1002" data-radio-name="Galaxy FM" data-thumbnail="https://play-lh.googleusercontent.com/kNR0yn7r7VyNH2qQKnS7L14lghE6M_81w4TP--Q3t_4xWHHN5TuRjPznF31r9JgLDrQ">
+                <img src="https://play-lh.googleusercontent.com/kNR0yn7r7VyNH2qQKnS7L14lghE6M_81w4TP--Q3t_4xWHHN5TuRjPznF31r9JgLDrQ" alt="Galaxy FM" class="radio-thumbnail">
+                <div class="radio-title">Galaxy FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://s5.voscast.com:9905/EMMANDUSO" data-radio-name="Cbs FM" data-thumbnail="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ_5rAxac5OwYT3ifIcgT71la_xiAa8t15NkQntNTHjg&s">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ_5rAxac5OwYT3ifIcgT71la_xiAa8t15NkQntNTHjg&s" alt="Cbs FM" class="radio-thumbnail">
+                <div class="radio-title">Cbs FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://turadio.accesopanel.com/8024/stream" data-radio-name="Beat FM" data-thumbnail="https://cdn-profiles.tunein.com/s255517/images/logog.jpg?t=162308">
+                <img src="https://cdn-profiles.tunein.com/s255517/images/logog.jpg?t=162308" alt="Beat FM" class="radio-thumbnail">
+                <div class="radio-title">Beat FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://streams.radio.co/see104bedb/listen" data-radio-name="Nxt Radio" data-thumbnail="https://static.tuneyou.com/images/logos/500_500/4/15904/NXTRadio106.1FM_6.jpg">
+                <img src="https://static.tuneyou.com/images/logos/500_500/4/15904/NXTRadio106.1FM_6.jpg" alt="Nxt Radio" class="radio-thumbnail">
+                <div class="radio-title">Nxt Radio</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://turadio.accesopanel.com/8024/stream" data-radio-name="Capital FM" data-thumbnail="https://cdn-profiles.tunein.com/s255518/images/logog.jpg?t=162308">
+                <img src="https://cdn-profiles.tunein.com/s255518/images/logog.jpg?t=162308" alt="Capital FM" class="radio-thumbnail">
+                <div class="radio-title">Capital FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="http://radio.visiongroup.co.ug:8000/xfm" data-radio-name="X FM" data-thumbnail="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYbzxppPk5wAXE0RGb-LdfNMQg0Gi28cKPzS3jZ75Djw&s">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYbzxppPk5wAXE0RGb-LdfNMQg0Gi28cKPzS3jZ75Djw&s" alt="X FM" class="radio-thumbnail">
+                <div class="radio-title">X FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://secure1.reliastream.com/977recordfm/;" data-radio-name="Record FM" data-thumbnail="https://br.radio.net/images/broadcasts/bd/e1/127600/1/c300.png">
+                <img src="https://br.radio.net/images/broadcasts/bd/e1/127600/1/c300.png" alt="Record FM" class="radio-thumbnail">
+                <div class="radio-title">Record FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="http://162.244.80.52:8740/;" data-radio-name="Radio One" data-thumbnail="https://radioonefm90.com/logo4.gif">
+                <img src="https://radioonefm90.com/logo4.gif" alt="Radio One" class="radio-thumbnail">
+                <div class="radio-title">Radio One</div>
+            </div>
+            <div class="radio-item" data-stream-url="http://s13.myradiostream.com:40212/;stream.nsv" data-radio-name="Voice Of Africa" data-thumbnail="https://voiceofafricafmuganda.com/wp-content/uploads/2022/07/Voice-of-Africa-FM-Radio-Logo.png">
+                <img src="https://voiceofafricafmuganda.com/wp-content/uploads/2022/07/Voice-of-Africa-FM-Radio-Logo.png" alt="Voice Of Africa" class="radio-thumbnail">
+                <div class="radio-title">Voice Of Africa</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://stream-151.zeno.fm/toprecv2ppevv?zs=hqQkK9lbQa-sZvefkCgf5g" data-radio-name="zfliX fM" data-thumbnail="https://i.postimg.cc/Xq4zpY2w/28284637-ico.png">
+                <img src="https://i.postimg.cc/Xq4zpY2w/28284637-ico.png" alt="zfliX fM" class="radio-thumbnail">
+                <div class="radio-title">zfliX fM</div>
+            </div>
+            <div class="radio-item" data-stream-url="http://dreamsiteradiocp.com:8052/;" data-radio-name="Radio Maria" data-thumbnail="https://play-lh.googleusercontent.com/aOESC8ltNg9obWMf2RGMOBc06u-Qrewb1apKe7j8Ib1Nqo8ewq0IP3re_3CW3InQYO8">
+                <img src="https://play-lh.googleusercontent.com/aOESC8ltNg9obWMf2RGMOBc06u-Qrewb1apKe7j8Ib1Nqo8ewq0IP3re_3CW3InQYO8" alt="Radio Maria" class="radio-thumbnail">
+                <div class="radio-title">Radio Maria</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://dc4.serverse.com/proxy/pearlfm/stream" data-radio-name="Pearl FM" data-thumbnail="https://cdn-profiles.tunein.com/s273287/images/logog.jpg?t=1675274894000">
+                <img src="https://cdn-profiles.tunein.com/s273287/images/logog.jpg?t=1675274894000" alt="Pearl FM" class="radio-thumbnail">
+                <div class="radio-title">Pearl FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="http://streaming.radiosapientia.com:6300/sapientia" data-radio-name="Radio sapientia" data-thumbnail="https://cdn-profiles.tunein.com/s114921/images/logog.jpg?t=157617">
+                <img src="https://cdn-profiles.tunein.com/s114921/images/logog.jpg?t=157617" alt="Radio sapientia" class="radio-thumbnail">
+                <div class="radio-title">Radio sapientia</div>
+            </div>
+            <div class="radio-item" data-stream-url="http://65.108.120.179:9097/live" data-radio-name="Salt FM" data-thumbnail="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmuKaf-yoGXS7XdWOlLICHl5WzgsYHvZhJqA&usqp=CAU">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmuKaf-yoGXS7XdWOlLICHl5WzgsYHvZhJqA&usqp=CAU" alt="Salt FM" class="radio-thumbnail">
+                <div class="radio-title">Salt FM</div>
+            </div>
+            <div class="radio-item" data-stream-url="https://c24.radioboss.fm:18185/stream" data-radio-name="Kfc Radio" data-thumbnail="https://pbs.twimg.com/profile_images/1828547988739723264/wba9OR6w_400x400.jpg">
+                <img src="https://pbs.twimg.com/profile_images/1828547988739723264/wba9OR6w_400x400.jpg" alt="Kfc Radio" class="radio-thumbnail">
+                <div class="radio-title">Kfc Radio</div>
+            </div>
+            <div class="radio-item" data-stream-url="http://s44.myradiostream.com:8138/;" data-radio-name="Sanyu FM" data-thumbnail="https://static-media.streema.com/media/cache/88/2d/882d5e39869620fd0eaab3739136b1f0.jpg">
+                <img src="https://static-media.streema.com/media/cache/88/2d/882d5e39869620fd0eaab3739136b1f0.jpg" alt="Sanyu FM" class="radio-thumbnail">
+                <div class="radio-title">Sanyu FM</div>
+            </div>
+        </div>
+        <div id="lunaradio"></div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var currentStreamUrl = "";
+
+            function initializePlayer(streamUrl, thumbnail, title) {
+                $("#lunaradio").lunaradio("destroy");
+                $("#lunaradio").lunaradio({
+                    userinterface: "big",
+                    backgroundcolor: "rgba(9,15,25,0.8)",
+                    fontcolor: "#FFFFFF",
+                    hightlightcolor: "#FF0000",
+                    fontname: "Saira Condensed",
+                    googlefont: "Saira+Condensed:wght@100",
+                    fontratio: "0.3",
+                    radioname: title,
+                    scroll: "true",
+                    coverimage: thumbnail,
+                    usevisualizer: "fake",
+                    coverstyle: "animated",
+                    visualizertype: "6",
+                    multicolorvisualizer: "true",
+                    color1: "dc143c",
+                    color2: "f1666d",
+                    color3: "e6f62f",
+                    color4: "#e6f62f",
+                    itunestoken: "1000lIPN",
+                    metadatatechnic: "corsproxy",
+                    ownmetadataurl: "",
+                    streamurl: streamUrl,
+                    streamtype: "radiozeno",
+                    icecastmountpoint: "/radio.mp3",
+                    radionomyid: "",
+                    radionomyapikey: "",
+                    radiozenoid: "utztqpdbt0hvv",
+                    radiojarid: "",
+                    radiocoid: "",
+                    shoutcastpath: "/stream",
+                    shoutcastid: "1",
+                    streamsuffix: "",
+                    metadatainterval: "20000",
+                    volume: "95",
+                    debug: "false",
+                    usestreamcorsproxy: "false",
+                    corsproxy: "https://corsradio.herokuapp.com/index.php?q=",
+                    autoplay:"true"
+                });
+            }
+
+            initializePlayer(
+                "http://162.244.80.52:8732/;stream.mp3?DIST=TuneIn&TGT=TuneIn&maxServers=2&gdpr=0&us_privacy=1YNY&partnertok=eyJhbGciOiJIUzI1NiIsImtpZCI6InR1bmVpbiIsInR5cCI6IkpXVCJ9.eyJ0cnVzdGVkX3BhcnRuZXIiOnRydWUsImlhdCI6MTYzNTg5MzYzMywiaXNzIjoidGlzcnYifQ.MOdxNOF638bWA3-fPsih2J02gJGmOAADKr7Sax_mRt0",
+                "https://i.postimg.cc/5tZZRzXy/unnamed.png",
+                "Akaboozi FM"
+            );
+
+            $("#dropdown-button").click(function() {
+                $("#radio-list").toggleClass("show");
+            });
+
+            $(document).on("click", ".radio-item", function() {
+                var streamUrl = $(this).data("stream-url");
+                var thumbnail = $(this).data("thumbnail");
+                var title = $(this).data("radio-name");
+
+                if (currentStreamUrl !== streamUrl) {
+                    currentStreamUrl = streamUrl;
+                    initializePlayer(streamUrl, thumbnail, title);
+                }
+                $("#radio-list").removeClass("show");
+            });
+
+            $("#search-bar").on("input", function() {
+                var searchValue = $(this).val().toLowerCase();
+                $(".radio-item").each(function() {
+                    var title = $(this).find(".radio-title").text().toLowerCase();
+                    if (title.includes(searchValue)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="3bc5e4e5245e387f3290c38f-|49" defer></script>
+</body>
+</html>
